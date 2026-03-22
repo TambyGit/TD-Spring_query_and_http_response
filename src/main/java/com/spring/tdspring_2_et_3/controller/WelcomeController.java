@@ -11,7 +11,7 @@ public class WelcomeController {
 
     @GetMapping("/welcome")
     public ResponseEntity<String> welcome(@RequestParam String name) {
-        if (name == null) {
+        if (name == null || name.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Parameter name is empty or null");
         }else {
