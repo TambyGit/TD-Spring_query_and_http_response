@@ -30,19 +30,32 @@ public class StudentController {
     }
 
     @GetMapping("/students")
-    public ResponseEntity<?> getStudents(@RequestHeader("Accept") String accetHeader) {
-        if ("text/plain".equals(accetHeader)) {
-            String name = studentList.stream().map(s -> s.getFirstName() + " " + s.getLastName())
-                    .collect(Collectors.joining(", "));
-            return ResponseEntity.ok()
-                    .body(name);
-        }
-        else if ("application/json".equals(accetHeader)) {
-            return ResponseEntity.ok()
-                    .body(studentList);
-        }else {
-            return ResponseEntity.badRequest()
-                    .body("Format non supporté");
+    public ResponseEntity<?> getStudents(@RequestHeader(value = "Accept", required = false) String accetHeader) {
+        try{
+            if (accetHeader == null || accetHeader.isEmpty()) {
+                return ResponseEntity
+                        .status(HttpStatus.BAD_REQUEST)
+                        .body("Parameter accetHeader is empty or null");
+            }
+            if ("text/plain".equals(accetHeader)) {
+                String names = studentList.stream()
+                        .map(s -> s.getFirstName() + " " + s.getLastName())
+                        .collect(Collectors.joining(", "));
+                return ResponseEntity.ok()
+                        .body(names);
+            }else if  ("application/json".equals(accetHeader)) {
+                return ResponseEntity.ok()
+                        .body(studentList);
+            }else{
+                return  ResponseEntity
+                        .status(HttpStatus.NOT_IMPLEMENTED)
+                        .body("Parameter accetHeader is not supported");
+            }
+
+        }catch (Exception e){
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error Server");
         }
     }
 }
