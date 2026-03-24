@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,33 +32,33 @@ public class StudentController {
         }
     }
 
-//    @GetMapping("/students")
-//    public ResponseEntity<?> getStudents(@RequestHeader(value = "Accept", required = false) String accetHeader) {
-//        try{
-//            if (accetHeader == null || accetHeader.isEmpty()) {
-//                return ResponseEntity
-//                        .status(HttpStatus.BAD_REQUEST)
-//                        .body("Parameter accetHeader is empty or null");
-//            }
-//            if ("text/plain".equals(accetHeader)) {
-//                String names = studentList.stream()
-//                        .map(s -> s.getFirstName() + " " + s.getLastName())
-//                        .collect(Collectors.joining(", "));
-//                return ResponseEntity.ok()
-//                        .body(names);
-//            }else if  ("application/json".equals(accetHeader)) {
-//                return ResponseEntity.ok()
-//                        .body(studentList);
-//            }else{
-//                return  ResponseEntity
-//                        .status(HttpStatus.NOT_IMPLEMENTED)
-//                        .body("Parameter accetHeader is not supported");
-//            }
-//
-//        }catch (Exception e){
-//            return ResponseEntity
-//                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                    .body("Error Server");
-//        }
-//    }
+    @GetMapping("/students")
+    public ResponseEntity<?> getStudents(@RequestHeader(value = "Accept", required = false) String acceptHeader) {
+        try{
+            if (acceptHeader == null || acceptHeader.isEmpty()) {
+                return ResponseEntity
+                        .status(HttpStatus.BAD_REQUEST)
+                        .body("Parameter accetHeader is empty or null");
+            }
+            if ("text/plain".equals(acceptHeader)) {
+                String names = studentService.getStudentList().stream()
+                        .map(s -> s.getFirstName() + " " + s.getLastName())
+                        .collect(Collectors.joining(", "));
+                return ResponseEntity.ok()
+                        .body(names);
+            }else if  ("application/json".equals(acceptHeader)) {
+                return ResponseEntity.ok()
+                        .body(studentService.getStudentList());
+            }else{
+                return  ResponseEntity
+                        .status(HttpStatus.NOT_IMPLEMENTED)
+                        .body("Parameter accetHeader is not supported");
+            }
+
+        }catch (Exception e){
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Server Error");
+        }
+    }
 }
